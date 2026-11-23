@@ -138,9 +138,20 @@
 }
 
 .contact-form {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.contact-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .contact-field-grid {
@@ -196,6 +207,23 @@
   color: #b42318;
 }
 
+.contact-submit-error {
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: #fef3f2;
+  border: 1px solid #fecdca;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: #b42318;
+}
+
+.contact-fallback-link {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .contact-submit {
   margin-top: 6px;
   gap: 10px;
@@ -203,6 +231,13 @@
   font-size: 0.90625rem;
   letter-spacing: 0.01em;
   text-transform: none;
+}
+
+.contact-submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+  transform: none;
+  box-shadow: none;
 }
 
 .contact-submit-arrow {
@@ -225,7 +260,7 @@
 .contact-confirmation-title {
   margin: 0;
   font-size: 1.15rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--ink);
 }
 

@@ -47,7 +47,9 @@ const CONTACT_CONTENT = {
   form: {
     heading: "Send a Message",
     submitLabel: "Send Message",
+    sendingLabel: "Sending...",
     recipientEmail: "kalansooriya615@gmail.com",
+    endpoint: "/api/contact",
   },
 };
 
@@ -56,6 +58,7 @@ const INITIAL_FORM = {
   email: "",
   subject: "",
   message: "",
+  honeypot: "",
 };
 
 function validateForm(values) {
@@ -78,45 +81,93 @@ function validateForm(values) {
   return errors;
 }
 
-function buildMailtoHref(recipient, inquiry) {
-  const subject = inquiry.subject || `Portfolio Inquiry from ${inquiry.name}`;
-  const body = `Hi Praveen,\n\n${inquiry.message}\n\nBest,\n${inquiry.name} (${inquiry.email})`;
+function buildMailtoHref(recipient, values) {
+  const cleanName = values.name.trim();
+  const cleanEmail = values.email.trim();
+  const cleanSubject = values.subject.trim();
+  const cleanMessage = values.message.trim();
+  const subject =
+    cleanSubject ||
+    (cleanName ? `Portfolio Inquiry from ${cleanName}` : "Portfolio Inquiry");
+  const body = `Hi Praveen,\n\n${cleanMessage}${
+    cleanName ? `\n\nBest,\n${cleanName} (${cleanEmail})` : ""
+  }`;
   return `mailto:${recipient}?subject=${encodeURIComponent(
     subject
   )}&body=${encodeURIComponent(body)}`;
 }
 
 /**
- * Dedicated Contact route pairing direct details and social links with an accessible message form.
+ * Dedicated Contact route delivering messages securely through the Vercel /api/contact endpoint.
  */
 export default function Contact() {
   const [formValues, setFormValues] = useState(INITIAL_FORM);
   const [errors, setErrors] = useState({});
-  const [submittedInquiry, setSubmittedInquiry] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [sentToName, setSentToName] = useState("");
 
   function handleFieldChange(field, value) {
     setFormValues((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
+    if (submitError) {
+      setSubmitError("");
+    }
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    if (isSubmitting) {
+      return;
+    }
+
     const validationErrors = validateForm(formValues);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    setSubmittedInquiry({
+    setIsSubmitting(true);
+    setSubmitError("");
+
+    const payload = {
       name: formValues.name.trim(),
       email: formValues.email.trim(),
       subject: formValues.subject.trim(),
       message: formValues.message.trim(),
-    });
-    setFormValues(INITIAL_FORM);
-    setErrors({});
+      honeypot: formValues.honeypot,
+    };
+
+    try {
+      const response = await fetch(CONTACT_CONTENT.form.endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json().catch(() => null);
+      if (!response.ok || !result?.ok) {
+        throw new Error(
+          result?.error ||
+            "Unable to deliver your message right now. Please try again."
+        );
+      }
+
+      setSentToName(payload.name);
+      setFormValues(INITIAL_FORM);
+      setErrors({});
+    } catch (error) {
+      setSubmitError(
+        error?.message ||
+          "Unable to deliver your message right now. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -183,39 +234,45 @@ export default function Contact() {
             {CONTACT_CONTENT.form.heading}
           </h2>
 
-          {submittedInquiry ? (
+          {sentToName ? (
             <div className="contact-confirmation" role="status">
               <p className="contact-confirmation-title">
-                Thanks, {submittedInquiry.name}. Your message is ready to send.
+                Message sent! Thank you.
               </p>
               <p className="contact-confirmation-copy">
-                Click below to send this directly via your email app, or start a
-                new message.
+                Your note has been delivered directly to{" "}
+                {CONTACT_CONTENT.form.recipientEmail}. I’ll get back to you
+                soon.
               </p>
               <div className="contact-confirmation-actions">
-                <a
-                  href={buildMailtoHref(
-                    CONTACT_CONTENT.form.recipientEmail,
-                    submittedInquiry
-                  )}
-                  className="btn-pill contact-submit"
-                >
-                  Open in Email App
-                  <span className="contact-submit-arrow" aria-hidden="true">
-                    &rarr;
-                  </span>
-                </a>
                 <button
                   type="button"
                   className="contact-reset-btn"
-                  onClick={() => setSubmittedInquiry(null)}
+                  onClick={() => setSentToName("")}
                 >
-                  New Message
+                  Send Another Message
                 </button>
               </div>
             </div>
           ) : (
             <form className="contact-form" onSubmit={handleSubmit} noValidate>
+              {/* Off-screen honeypot using opaque name and password-manager ignores so autofill leaves it untouched. */}
+              <input
+                type="text"
+                name="honeypot_trap"
+                tabIndex={-1}
+                autoComplete="new-password"
+                aria-hidden="true"
+                data-lpignore="true"
+                data-1p-ignore="true"
+                data-bwignore="true"
+                className="contact-honeypot"
+                value={formValues.honeypot}
+                onChange={(event) =>
+                  handleFieldChange("honeypot", event.target.value)
+                }
+              />
+
               <div className="contact-field-grid">
                 <div className="contact-field">
                   <label htmlFor="contact-name" className="sr-only">
@@ -225,7 +282,9 @@ export default function Contact() {
                     id="contact-name"
                     type="text"
                     autoComplete="name"
+                    maxLength={120}
                     required
+                    disabled={isSubmitting}
                     value={formValues.name}
                     onChange={(event) =>
                       handleFieldChange("name", event.target.value)
@@ -251,7 +310,9 @@ export default function Contact() {
                     id="contact-email"
                     type="email"
                     autoComplete="email"
+                    maxLength={254}
                     required
+                    disabled={isSubmitting}
                     value={formValues.email}
                     onChange={(event) =>
                       handleFieldChange("email", event.target.value)
@@ -277,6 +338,8 @@ export default function Contact() {
                 <input
                   id="contact-subject"
                   type="text"
+                  maxLength={200}
+                  disabled={isSubmitting}
                   value={formValues.subject}
                   onChange={(event) =>
                     handleFieldChange("subject", event.target.value)
@@ -293,7 +356,9 @@ export default function Contact() {
                 <textarea
                   id="contact-message"
                   rows="5"
+                  maxLength={5000}
                   required
+                  disabled={isSubmitting}
                   value={formValues.message}
                   onChange={(event) =>
                     handleFieldChange("message", event.target.value)
@@ -311,12 +376,35 @@ export default function Contact() {
                 )}
               </div>
 
+              {submitError && (
+                <div className="contact-submit-error" role="alert">
+                  <span>{submitError}</span>{" "}
+                  <a
+                    href={buildMailtoHref(
+                      CONTACT_CONTENT.form.recipientEmail,
+                      formValues
+                    )}
+                    className="contact-fallback-link"
+                  >
+                    Email directly &rarr;
+                  </a>
+                </div>
+              )}
+
               <div>
-                <button type="submit" className="btn-pill contact-submit">
-                  {CONTACT_CONTENT.form.submitLabel}
-                  <span className="contact-submit-arrow" aria-hidden="true">
-                    &rarr;
-                  </span>
+                <button
+                  type="submit"
+                  className="btn-pill contact-submit"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting
+                    ? CONTACT_CONTENT.form.sendingLabel
+                    : CONTACT_CONTENT.form.submitLabel}
+                  {!isSubmitting && (
+                    <span className="contact-submit-arrow" aria-hidden="true">
+                      &rarr;
+                    </span>
+                  )}
                 </button>
               </div>
             </form>
