@@ -1,4 +1,4 @@
-import logo4 from "../../assets/logo2.png";
+import logo4 from "../../assets/logo2.webp";
 import "./BrandMark.css";
 
 /**

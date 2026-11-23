@@ -1,4 +1,4 @@
-import sriLankaFlag from "../../assets/flag.png";
+import sriLankaFlag from "../../assets/flag.webp";
 import { APP_ROUTES } from "../../utils/router.js";
 import HeroContent from "./HeroContent.jsx";
 import HeroVisual from "./HeroVisual.jsx";

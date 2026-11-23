@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import fingerprintImg from "../../assets/logo2.png";
+import fingerprintImg from "../../assets/logo2.webp";
 import "./ParticleAssemble.css";
 
 const ASSEMBLE_DURATION = 3200;
