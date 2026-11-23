@@ -22,8 +22,6 @@ export default function HeroVisual() {
       >
         <ParticleAssemble replaySignal={replaySignal} />
       </button>
-
-     
     </div>
   );
 }

@@ -10,6 +10,11 @@ const DEFAULT_FROM = "Portfolio Contact <onboarding@resend.dev>";
 const RESEND_HOST = "api.resend.com";
 const RESEND_PATH = "/emails";
 const REQUEST_TIMEOUT_MS = 8500;
+const MAX_PAYLOAD_BYTES = 32 * 1024;
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 5;
+const MAX_RATE_LIMIT_BUCKETS = 1000;
+const RATE_LIMIT_SYMBOL = Symbol.for("portfolio-contact-api.rate-limit");
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -33,26 +38,143 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;");
 }
 
-function parseJsonBody(req) {
-  if (!req.body) {
-    return null;
+function applySecurityHeaders(res) {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Cache-Control", "no-store");
+}
+
+function getHeaderString(value) {
+  if (Array.isArray(value)) {
+    return String(value[0] ?? "");
   }
-  if (typeof req.body === "string") {
-    try {
-      return JSON.parse(req.body);
-    } catch {
-      return null;
+  return typeof value === "string" ? value : "";
+}
+
+function isCrossSiteRequest(req) {
+  const fetchSite = getHeaderString(req.headers?.["sec-fetch-site"])
+    .trim()
+    .toLowerCase();
+  if (fetchSite === "cross-site") {
+    return true;
+  }
+
+  const origin = getHeaderString(req.headers?.origin).trim();
+  if (!origin) {
+    return false;
+  }
+
+  const requestHost = (
+    getHeaderString(req.headers?.["x-forwarded-host"]) ||
+    getHeaderString(req.headers?.host)
+  )
+    .split(",")[0]
+    .trim()
+    .toLowerCase();
+
+  if (!requestHost) {
+    return false;
+  }
+
+  try {
+    return new URL(origin).host.toLowerCase() !== requestHost;
+  } catch {
+    return true;
+  }
+}
+
+function isJsonContentType(req) {
+  const contentType = getHeaderString(req.headers?.["content-type"]);
+  return contentType.toLowerCase().split(";")[0].trim() === "application/json";
+}
+
+function getClientIp(req) {
+  const rawIp =
+    getHeaderString(req.headers?.["x-vercel-forwarded-for"]) ||
+    getHeaderString(req.headers?.["x-real-ip"]) ||
+    getHeaderString(req.headers?.["x-forwarded-for"]) ||
+    req.socket?.remoteAddress ||
+    "unknown";
+  return rawIp.split(",")[0].trim() || "unknown";
+}
+
+function checkRateLimit(req) {
+  const buckets = (globalThis[RATE_LIMIT_SYMBOL] ??= new Map());
+  const ip = getClientIp(req);
+  const now = Date.now();
+  const existing = buckets.get(ip) ?? [];
+  const active = existing.filter((ts) => now - ts < RATE_LIMIT_WINDOW_MS);
+
+  if (active.length >= RATE_LIMIT_MAX_REQUESTS) {
+    buckets.set(ip, active);
+    const retryAfterSeconds = Math.max(
+      1,
+      Math.ceil((active[0] + RATE_LIMIT_WINDOW_MS - now) / 1000)
+    );
+    return { limited: true, retryAfterSeconds };
+  }
+
+  if (!buckets.has(ip) && buckets.size >= MAX_RATE_LIMIT_BUCKETS) {
+    const oldestKey = buckets.keys().next().value;
+    if (oldestKey !== undefined) {
+      buckets.delete(oldestKey);
     }
   }
-  return typeof req.body === "object" ? req.body : null;
+
+  active.push(now);
+  buckets.set(ip, active);
+  return { limited: false };
+}
+
+function parseJsonBody(req) {
+  if (!req.body) {
+    return { error: "Invalid request payload.", status: 400 };
+  }
+
+  let parsed = null;
+  if (typeof req.body === "string") {
+    if (Buffer.byteLength(req.body, "utf8") > MAX_PAYLOAD_BYTES) {
+      return { error: "Request payload is too large.", status: 413 };
+    }
+    try {
+      parsed = JSON.parse(req.body);
+    } catch {
+      return { error: "Invalid request payload.", status: 400 };
+    }
+  } else if (typeof req.body === "object") {
+    parsed = req.body;
+  }
+
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return { error: "Invalid request payload.", status: 400 };
+  }
+
+  if (Buffer.byteLength(JSON.stringify(parsed), "utf8") > MAX_PAYLOAD_BYTES) {
+    return { error: "Request payload is too large.", status: 413 };
+  }
+
+  return { data: parsed };
 }
 
 function validatePayload(rawBody) {
+  if (
+    typeof rawBody.name !== "string" ||
+    typeof rawBody.email !== "string" ||
+    typeof rawBody.message !== "string" ||
+    (rawBody.subject !== undefined &&
+      rawBody.subject !== null &&
+      typeof rawBody.subject !== "string") ||
+    (rawBody.honeypot !== undefined &&
+      rawBody.honeypot !== null &&
+      typeof rawBody.honeypot !== "string")
+  ) {
+    return { error: "Invalid request payload." };
+  }
+
   const name = stripHeaderBreaks(rawBody.name).slice(0, LIMITS.name);
   const email = stripHeaderBreaks(rawBody.email).slice(0, LIMITS.email);
   const subject = stripHeaderBreaks(rawBody.subject).slice(0, LIMITS.subject);
-  const message = String(rawBody.message ?? "").trim().slice(0, LIMITS.message);
-  const honeypot = String(rawBody.honeypot ?? "").trim();
+  const message = rawBody.message.trim().slice(0, LIMITS.message);
+  const honeypot = (rawBody.honeypot ?? "").trim();
 
   if (honeypot) {
     return { isSpam: true };
@@ -214,17 +336,35 @@ async function sendResendEmail(apiKey, emailPayload) {
  * Vercel Serverless Function forwarding validated portfolio contact submissions via Resend.
  */
 export default async function handler(req, res) {
+  applySecurityHeaders(res);
+
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method not allowed." });
   }
 
-  const rawBody = parseJsonBody(req);
-  if (!rawBody) {
-    return res.status(400).json({ error: "Invalid request payload." });
+  if (isCrossSiteRequest(req)) {
+    return res.status(403).json({ error: "Cross-site requests are not allowed." });
   }
 
-  const validation = validatePayload(rawBody);
+  if (!isJsonContentType(req)) {
+    return res.status(415).json({ error: "Content-Type must be application/json." });
+  }
+
+  const rateLimit = checkRateLimit(req);
+  if (rateLimit.limited) {
+    res.setHeader("Retry-After", String(rateLimit.retryAfterSeconds));
+    return res.status(429).json({
+      error: "Too many messages sent. Please wait a few minutes and try again.",
+    });
+  }
+
+  const parsedBody = parseJsonBody(req);
+  if (parsedBody.error) {
+    return res.status(parsedBody.status).json({ error: parsedBody.error });
+  }
+
+  const validation = validatePayload(parsedBody.data);
   if (validation.isSpam) {
     console.warn("Contact submission skipped: honeypot field was populated.");
     return res.status(200).json({ ok: true });
@@ -296,7 +436,7 @@ export default async function handler(req, res) {
     }
 
     console.info("Resend email queued:", resendData.id);
-    return res.status(200).json({ ok: true, sender: name, id: resendData.id });
+    return res.status(200).json({ ok: true });
   } catch (error) {
     console.error("Contact delivery error:", error);
     const isTimeout =

@@ -105,7 +105,7 @@ export default function Contact() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const [sentToName, setSentToName] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   function handleFieldChange(field, value) {
     setFormValues((prev) => ({ ...prev, [field]: value }));
@@ -157,7 +157,7 @@ export default function Contact() {
         );
       }
 
-      setSentToName(payload.name);
+      setIsSubmitted(true);
       setFormValues(INITIAL_FORM);
       setErrors({});
     } catch (error) {
@@ -234,7 +234,7 @@ export default function Contact() {
             {CONTACT_CONTENT.form.heading}
           </h2>
 
-          {sentToName ? (
+          {isSubmitted ? (
             <div className="contact-confirmation" role="status">
               <p className="contact-confirmation-title">
                 Message sent! Thank you.
@@ -248,7 +248,7 @@ export default function Contact() {
                 <button
                   type="button"
                   className="contact-reset-btn"
-                  onClick={() => setSentToName("")}
+                  onClick={() => setIsSubmitted(false)}
                 >
                   Send Another Message
                 </button>

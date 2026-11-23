@@ -1,10 +1,11 @@
 import { statSync } from "node:fs";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 
-const MAX_BODY_BYTES = 100 * 1024;
+const ROOT_DIR = path.dirname(fileURLToPath(import.meta.url));
+const MAX_BODY_BYTES = 32 * 1024;
 const INJECTED_ENV_SYMBOL = Symbol.for("local-contact-api.injected-env");
 
 function readRequestBody(req) {
@@ -89,7 +90,10 @@ function localContactApiPlugin(env) {
       );
       const contactHandlerBaseUrl = pathToFileURL(contactHandlerPath).href;
 
-      server.middlewares.use("/api/contact", async (req, res) => {
+      server.middlewares.use("/api/contact", async (req, res, next) => {
+        if (req.url && req.url !== "/" && !req.url.startsWith("/?")) {
+          return next();
+        }
         try {
           req.body = await readRequestBody(req);
           const { mtimeMs } = statSync(contactHandlerPath);
@@ -115,7 +119,7 @@ function localContactApiPlugin(env) {
 }
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
+  const env = loadEnv(mode, ROOT_DIR, "");
 
   return {
     plugins: [react(), localContactApiPlugin(env)],

@@ -176,28 +176,6 @@ textarea:focus-visible {
   color: var(--body);
 }
 
-.btn-dark-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  border-radius: 999px;
-  padding: 12px 26px;
-  background: #000000;
-  color: #ffffff;
-  text-decoration: none;
-  font-family: inherit;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.btn-dark-pill:hover {
-  background: #1f1f24;
-  transform: translateY(-1px);
-}
-
 @media (max-width: 860px) {
   .page-section {
     width: 100%;
@@ -227,8 +205,7 @@ textarea:focus-visible {
     scroll-behavior: auto;
   }
 
-  .btn-pill,
-  .btn-dark-pill {
+  .btn-pill {
     transition: none;
   }
 }

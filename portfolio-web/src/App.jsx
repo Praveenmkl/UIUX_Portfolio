@@ -14,11 +14,11 @@ import {
 } from "./utils/router.js";
 
 const ROUTE_TITLES = {
-  [APP_ROUTES.HOME]: "Praveen Kalansooriya — UI/UX Designer",
-  [APP_ROUTES.ABOUT]: "About — Praveen Kalansooriya",
-  [APP_ROUTES.WORK]: "Work — Praveen Kalansooriya",
-  [APP_ROUTES.ARTICLES]: "Articles — Praveen Kalansooriya",
-  [APP_ROUTES.CONTACT]: "Contact — Praveen Kalansooriya",
+  [APP_ROUTES.HOME]: "Praveen Kalansooriya-UI/UX Designer",
+  [APP_ROUTES.ABOUT]: "About-Praveen Kalansooriya",
+  [APP_ROUTES.WORK]: "Work-Praveen Kalansooriya",
+  [APP_ROUTES.ARTICLES]: "Articles-Praveen Kalansooriya",
+  [APP_ROUTES.CONTACT]: "Contact-Praveen Kalansooriya",
 };
 
 /**

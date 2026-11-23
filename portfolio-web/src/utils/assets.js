@@ -48,36 +48,6 @@ export function resolveAssetByKeyword(keyword) {
 }
 
 /**
- * Resolve a project's thumbnail image and ordered numbered UI showcase screens from src/assets.
- */
-export function resolveProjectMedia(keyword, screenMeta = []) {
-  const matches = findMatchingAssetEntries(keyword);
-  const thumbnailEntry = pickThumbnailEntry(matches);
-
-  const thumbnailPath = thumbnailEntry?.[0] ?? null;
-  const screens = matches
-    .filter(([assetPath]) => assetPath !== thumbnailPath)
-    .map(([assetPath, src], index) => {
-      const meta = screenMeta[index] ?? {};
-      const fallbackStep = String(index + 1).padStart(2, "0");
-
-      return {
-        id: assetPath,
-        step: meta.step ?? fallbackStep,
-        title: meta.title ?? `UI Screen ${fallbackStep}`,
-        caption: meta.caption ?? "",
-        src,
-        alt: meta.alt ?? `${meta.title ?? `Screen ${fallbackStep}`} interface`,
-      };
-    });
-
-  return {
-    thumbnail: thumbnailEntry?.[1] ?? null,
-    screens,
-  };
-}
-
-/**
  * Resolve the bundled resume document URL and download filename from src/assets without failing if absent.
  */
 export function resolveResumeAsset() {

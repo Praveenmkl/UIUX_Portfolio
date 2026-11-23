@@ -53,15 +53,6 @@ const TOOL_SVG_MAP = {
       <path d="M20 38H32V50L20 38Z" fill="#0055FF" />
     </svg>
   ),
-  miro: (
-    <svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
-      <rect width="64" height="64" rx="15" fill="#FFD02F" />
-      <path
-        d="M44 16H38L42 25L33 16H27L32 27L22 16H17L24 30L17 48H22L31 32L27 48H33L40 31L38 48H44L47 26L44 16Z"
-        fill="#050038"
-      />
-    </svg>
-  ),
 };
 
 /**

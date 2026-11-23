@@ -6,32 +6,3 @@
   mix-blend-mode: multiply;
   user-select: none;
 }
-
-.brand-mark--animated {
-  animation: mark-reveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes mark-reveal {
-  0% {
-    opacity: 0;
-    transform: scale(0.96);
-    clip-path: inset(0 100% 0 0);
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .brand-mark--animated {
-    animation: none;
-    opacity: 1;
-    transform: none;
-    clip-path: none;
-  }
-}
