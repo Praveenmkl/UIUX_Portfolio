@@ -16,7 +16,25 @@ export default function WorkCard({ project, onOpenProject }) {
   return (
     <article className="work-card">
       <div className="work-card-media">
-        {project.thumbnail ? (
+        {project.previewScreens?.length ? (
+          <div className="work-card-showcase" aria-label={project.thumbnailAlt || project.title}>
+            {project.previewScreens.map((screen, index) => (
+              <div
+                key={screen.src}
+                className={`work-card-phone${
+                  index === 1 ? " work-card-phone--featured" : ""
+                }`}
+              >
+                <img
+                  src={screen.src}
+                  alt={screen.alt}
+                  className="work-card-phone-image"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+        ) : project.thumbnail ? (
           <img
             src={project.thumbnail}
             alt={project.thumbnailAlt || project.title}

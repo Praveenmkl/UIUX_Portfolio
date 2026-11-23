@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { resolveAssetByKeyword } from "../../utils/assets.js";
+import { WADAKARU_PREVIEW_SCREENS } from "./wadakaruCaseStudy.js";
 import WorkCard from "./WorkCard.jsx";
 import WorkFilters from "./WorkFilters.jsx";
 import "./Work.css";
@@ -15,6 +16,7 @@ export const WORK_PROJECTS = [
     category: "UI Designs",
     categories: ["UI Designs"],
     thumbnail: resolveAssetByKeyword("wadakaru"),
+    previewScreens: WADAKARU_PREVIEW_SCREENS,
     thumbnailAlt:
       "WADAKARU mobile app interface showcase with onboarding, location-based service discovery, and technician profile screens",
   },
