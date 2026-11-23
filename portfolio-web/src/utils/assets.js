@@ -1,10 +1,7 @@
-const PROJECT_ASSET_MODULES = import.meta.glob(
-  "../assets/**/*.{png,jpg,jpeg,webp}",
-  {
-    eager: true,
-    import: "default",
-  }
-);
+const PROJECT_ASSET_MODULES = import.meta.glob("../assets/**/*.webp", {
+  eager: true,
+  import: "default",
+});
 
 const RESUME_ASSET_MODULES = import.meta.glob("../assets/**/*.{pdf,doc,docx}", {
   eager: true,
