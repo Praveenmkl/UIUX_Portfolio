@@ -1,0 +1,113 @@
+.resume-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: clamp(32px, 4.5vw, 52px);
+}
+
+.resume-role {
+  margin: 10px 0 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--body);
+}
+
+.resume-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.resume-sections {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(28px, 3.6vw, 44px);
+}
+
+.resume-section-heading {
+  margin: 0 0 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.resume-items {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.resume-card {
+  padding: clamp(22px, 2.5vw, 28px);
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid rgba(12, 12, 14, 0.07);
+  box-shadow: 0 18px 44px -28px rgba(12, 12, 14, 0.14);
+}
+
+.resume-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.resume-card-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.resume-card-meta {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.resume-card-detail {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.68;
+  color: var(--body);
+}
+
+.resume-skills {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.resume-skill-pill {
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #f5f5f7;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+@media (max-width: 860px) {
+  .resume-items {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  .site-header,
+  .site-footer,
+  .resume-actions {
+    display: none;
+  }
+}

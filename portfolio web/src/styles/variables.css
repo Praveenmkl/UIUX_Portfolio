@@ -1,0 +1,10 @@
+:root {
+  --bg: #ffffff;
+  --ink: #0c0c0e;
+  --body: #3a3a42;
+  --muted: #6e6e77;
+  --line: #dcdce2;
+  --accent: #ffdd00;
+  --accent-hover: #f5d400;
+  --container: 1920px;
+}

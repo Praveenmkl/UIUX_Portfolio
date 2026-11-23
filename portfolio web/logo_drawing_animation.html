@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="unison" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Logo Drawing Animation</title>
+  <style>
+    :root {
+      --ink: #000000;
+      --paper: #ffffff;
+      --accent: #ffdd00;
+      --accent-hover: #f2d000;
+      --muted: #6e6e73;
+      --border: rgba(0, 0, 0, 0.12);
+      --surface: rgba(0, 0, 0, 0.04);
+      --speed: 1;
+    }
+
+    html[data-theme="dark"] {
+      --ink: #ffffff;
+      --paper: #0e0e10;
+      --muted: #9898a0;
+      --border: rgba(255, 255, 255, 0.14);
+      --surface: rgba(255, 255, 255, 0.07);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .stage {
+      width: min(92vw, 640px);
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 32px;
+    }
+
+    .canvas {
+      display: grid;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .logo {
+      display: block;
+      width: min(58vw, 270px);
+      height: auto;
+      overflow: visible;
+      color: var(--ink);
+    }
+
+    .logo path {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 7.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1 2;
+      stroke-dashoffset: 1.02;
+      opacity: 0;
+    }
+
+    .logo.is-animating path {
+      animation-name: draw-stroke;
+      animation-duration: calc(var(--dur, 0.6s) * var(--speed, 1));
+      animation-delay: calc(var(--delay, 0s) * var(--speed, 1));
+      animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+      animation-fill-mode: both;
+    }
+
+    /* Mode 1: Sequential (bars bottom-to-top, then curves top-to-bottom) */
+    html[data-mode="sequential"] .vertical-1 { --dur: 0.42s; --delay: 0.00s; }
+    html[data-mode="sequential"] .vertical-2 { --dur: 0.54s; --delay: 0.11s; }
+    html[data-mode="sequential"] .vertical-3 { --dur: 0.66s; --delay: 0.22s; }
+    html[data-mode="sequential"] .curve-1    { --dur: 0.78s; --delay: 0.46s; }
+    html[data-mode="sequential"] .curve-2    { --dur: 0.64s; --delay: 0.66s; }
+    html[data-mode="sequential"] .curve-3    { --dur: 0.46s; --delay: 0.88s; }
+
+    /* Mode 2: Center-Out (core spine blooms outward symmetrically) */
+    html[data-mode="center"] .vertical-3 { --dur: 0.68s; --delay: 0.00s; }
+    html[data-mode="center"] .curve-1    { --dur: 0.76s; --delay: 0.06s; }
+    html[data-mode="center"] .vertical-2 { --dur: 0.56s; --delay: 0.24s; }
+    html[data-mode="center"] .curve-2    { --dur: 0.64s; --delay: 0.28s; }
+    html[data-mode="center"] .vertical-1 { --dur: 0.44s; --delay: 0.46s; }
+    html[data-mode="center"] .curve-3    { --dur: 0.48s; --delay: 0.48s; }
+
+    /* Mode 3: Unison (all six strokes draw in tight parallel rhythm) */
+    html[data-mode="unison"] .vertical-1 { --dur: 0.62s; --delay: 0.00s; }
+    html[data-mode="unison"] .vertical-2 { --dur: 0.70s; --delay: 0.04s; }
+    html[data-mode="unison"] .vertical-3 { --dur: 0.78s; --delay: 0.08s; }
+    html[data-mode="unison"] .curve-1    { --dur: 0.84s; --delay: 0.10s; }
+    html[data-mode="unison"] .curve-2    { --dur: 0.76s; --delay: 0.14s; }
+    html[data-mode="unison"] .curve-3    { --dur: 0.66s; --delay: 0.18s; }
+
+    @keyframes draw-stroke {
+      0% {
+        stroke-dashoffset: 1.02;
+        opacity: 0;
+      }
+      5% {
+        opacity: 1;
+      }
+      100% {
+        stroke-dashoffset: 0;
+        opacity: 1;
+      }
+    }
+
+    .controls {
+      display: grid;
+      justify-items: center;
+      gap: 14px;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .replay {
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 22px;
+      background: var(--accent);
+      color: #171717;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .replay:hover {
+      transform: translateY(-2px);
+      background: var(--accent-hover);
+    }
+
+    .pill-group {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      gap: 2px;
+    }
+
+    .pill-btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 7px 13px;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.18s ease, color 0.18s ease;
+    }
+
+    .pill-btn:hover {
+      color: var(--ink);
+    }
+
+    .pill-btn[aria-pressed="true"] {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .secondary-btn {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 15px;
+      background: transparent;
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.18s ease, border-color 0.18s ease;
+    }
+
+    .secondary-btn:hover {
+      background: var(--surface);
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 3px;
+    }
+
+    .hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .logo.is-animating path,
+      .logo path {
+        animation: none;
+        stroke-dashoffset: 0;
+        opacity: 1;
+      }
+      body,
+      .replay,
+      .pill-btn,
+      .secondary-btn {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <div class="canvas">
+      <svg id="logo" class="logo is-animating"
+           viewBox="0 0 200 200"
+           role="img"
+           aria-label="Six-stroke abstract logo"
+           xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Vertical bars: drawn bottom to top -->
+        <path class="vertical-1" pathLength="1"
+              d="M 32.0 131.2 L 32.0 68.8" />
+        <path class="vertical-2" pathLength="1"
+              d="M 53.0 150.4 L 53.0 49.6" />
+        <path class="vertical-3" pathLength="1"
+              d="M 74.0 169.6 L 74.0 30.4" />
+
+        <!-- Curved arcs: drawn top to bottom -->
+        <path class="curve-1" pathLength="1"
+              d="M 134.0 36.5
+                 C 114.0 56.0, 96.5 73.5, 96.5 100.0
+                 C 96.5 126.5, 114.0 144.0, 134.0 163.5" />
+        <path class="curve-2" pathLength="1"
+              d="M 155.0 52.5
+                 C 141.0 66.0, 125.0 80.0, 125.0 100.0
+                 C 125.0 120.0, 141.0 134.0, 155.0 147.5" />
+        <path class="curve-3" pathLength="1"
+              d="M 168.0 75.8
+                 C 160.2 83.2, 150.0 89.0, 150.0 100.0
+                 C 150.0 111.0, 160.2 116.8, 168.0 124.2" />
+      </svg>
+    </div>
+
+    <div class="controls">
+      <div class="actions">
+        <button class="replay" id="replay" type="button">Replay animation ↻</button>
+
+        <div class="pill-group" role="group" aria-label="Draw choreography">
+          <button class="pill-btn" type="button" data-mode-btn="sequential" aria-pressed="false">Sequential</button>
+          <button class="pill-btn" type="button" data-mode-btn="center" aria-pressed="false">Center-Out</button>
+          <button class="pill-btn" type="button" data-mode-btn="unison" aria-pressed="true">Unison</button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="secondary-btn" id="speedBtn" type="button" aria-pressed="false">Speed: 1×</button>
+        <button class="secondary-btn" id="themeBtn" type="button" aria-pressed="false">Theme: Light</button>
+        <button class="secondary-btn" id="copyBtn" type="button">Copy Embed SVG</button>
+      </div>
+
+      <p class="hint">A Six-Stroke Drawing Reveal</p>
+    </div>
+  </main>
+
+  <script>
+    const root = document.documentElement;
+    const logo = document.getElementById("logo");
+    const replayBtn = document.getElementById("replay");
+    const modeButtons = document.querySelectorAll("[data-mode-btn]");
+    const speedBtn = document.getElementById("speedBtn");
+    const themeBtn = document.getElementById("themeBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
+
+    function replayDrawing() {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+      }
+      logo.classList.remove("is-animating");
+      void logo.getBoundingClientRect();
+      logo.classList.add("is-animating");
+    }
+
+    function setMode(mode) {
+      root.dataset.mode = mode;
+      modeButtons.forEach((btn) => {
+        btn.setAttribute("aria-pressed", String(btn.dataset.modeBtn === mode));
+      });
+      replayDrawing();
+    }
+
+    function toggleSpeed() {
+      const isSlow = speedBtn.getAttribute("aria-pressed") === "true";
+      const nextSlow = !isSlow;
+      root.style.setProperty("--speed", nextSlow ? "2" : "1");
+      speedBtn.setAttribute("aria-pressed", String(nextSlow));
+      speedBtn.textContent = nextSlow ? "Speed: 0.5×" : "Speed: 1×";
+      replayDrawing();
+    }
+
+    function toggleTheme() {
+      const isDark = root.dataset.theme === "dark";
+      const nextTheme = isDark ? "light" : "dark";
+      root.dataset.theme = nextTheme;
+      themeBtn.setAttribute("aria-pressed", String(nextTheme === "dark"));
+      themeBtn.textContent = nextTheme === "dark" ? "Theme: Dark" : "Theme: Light";
+      if (themeMeta) {
+        themeMeta.content = nextTheme === "dark" ? "#0e0e10" : "#ffffff";
+      }
+    }
+
+    function buildEmbedSnippet() {
+      const paths = [...logo.querySelectorAll("path")];
+      const speed = parseFloat(getComputedStyle(root).getPropertyValue("--speed")) || 1;
+      const scaleSec = (value) => `${Number(((parseFloat(value) || 0) * speed).toFixed(2))}s`;
+
+      const timingRules = paths
+        .map((path) => {
+          const cls = path.getAttribute("class");
+          const style = getComputedStyle(path);
+          const dur = scaleSec(style.getPropertyValue("--dur"));
+          const delay = scaleSec(style.getPropertyValue("--delay"));
+          return `    .logo-mark .${cls} { animation-duration: ${dur}; animation-delay: ${delay}; }`;
+        })
+        .join("\n");
+
+      const pathMarkup = paths
+        .map((path) => {
+          const cls = path.getAttribute("class");
+          const d = path.getAttribute("d").replace(/\s+/g, " ").trim();
+          return `  <path class="${cls}" pathLength="1" d="${d}" />`;
+        })
+        .join("\n");
+
+      return `<svg class="logo-mark" viewBox="0 0 200 200" role="img" aria-label="Logo" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .logo-mark path {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 7.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1 2;
+      stroke-dashoffset: 1.02;
+      opacity: 0;
+      animation: logo-draw 0.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+    }
+${timingRules}
+    @keyframes logo-draw {
+      0%   { stroke-dashoffset: 1.02; opacity: 0; }
+      5%   { opacity: 1; }
+      100% { stroke-dashoffset: 0; opacity: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .logo-mark path { animation: none; stroke-dashoffset: 0; opacity: 1; }
+    }
+  </style>
+${pathMarkup}
+</svg>`;
+    }
+
+    function fallbackCopyText(text) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(textarea);
+      if (!ok) {
+        throw new Error("Copy failed");
+      }
+    }
+
+    let copyResetTimer = null;
+
+    async function copyEmbedSvg() {
+      const snippet = buildEmbedSnippet();
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(snippet);
+        } else {
+          fallbackCopyText(snippet);
+        }
+        copyBtn.textContent = "Copied SVG ✓";
+      } catch {
+        try {
+          fallbackCopyText(snippet);
+          copyBtn.textContent = "Copied SVG ✓";
+        } catch {
+          copyBtn.textContent = "Copy unavailable";
+        }
+      }
+      clearTimeout(copyResetTimer);
+      copyResetTimer = setTimeout(() => { copyBtn.textContent = "Copy Embed SVG"; }, 1800);
+    }
+
+    replayBtn.addEventListener("click", replayDrawing);
+    modeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => setMode(btn.dataset.modeBtn));
+    });
+    speedBtn.addEventListener("click", toggleSpeed);
+    themeBtn.addEventListener("click", toggleTheme);
+    copyBtn.addEventListener("click", copyEmbedSvg);
+  </script>
+</body>
+</html>
