@@ -137,39 +137,19 @@
   color: var(--body);
 }
 
-.wd-hero-stage {
+.wd-hero-media {
   margin-top: clamp(28px, 4vw, 48px);
-  padding: clamp(26px, 4.2vw, 56px) clamp(18px, 4vw, 52px);
-  border-radius: 28px;
-  border: 1px solid rgba(12, 12, 14, 0.06);
-  background: radial-gradient(
-      circle at 50% 24%,
-      rgba(255, 221, 0, 0.22),
-      rgba(255, 221, 0, 0.06) 54%,
-      transparent 78%
-    ),
-    #fafafa;
+  border-radius: 26px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid rgba(12, 12, 14, 0.08);
+  box-shadow: 0 22px 54px -28px rgba(12, 12, 14, 0.16);
 }
 
-.wd-hero-phones {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: center;
-  gap: clamp(14px, 3vw, 36px);
-  max-width: 960px;
-  margin-inline: auto;
-}
-
-.wd-hero-phone {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
-.wd-hero-phone--featured {
-  transform: translateY(-10px);
+.wd-hero-image {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .wd-device-frame {
@@ -186,13 +166,6 @@
   width: 100%;
   height: auto;
   border-radius: clamp(13px, 1.7vw, 21px);
-}
-
-.wd-hero-caption {
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--muted);
-  text-align: center;
 }
 
 /* 02 — Project Overview */
@@ -537,28 +510,9 @@
     font-size: 1.02rem;
   }
 
-  .wd-hero-stage {
+  .wd-hero-media {
     margin-top: 24px;
-    padding: 20px 14px;
-    border-radius: 22px;
-  }
-
-  .wd-hero-phones {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px 12px;
-  }
-
-  .wd-hero-phone--featured {
-    order: -1;
-    grid-column: 1 / -1;
-    width: 100%;
-    max-width: 220px;
-    justify-self: center;
-    transform: none;
-  }
-
-  .wd-hero-caption {
-    font-size: 0.78rem;
+    border-radius: 18px;
   }
 
   .wd-spec-grid {

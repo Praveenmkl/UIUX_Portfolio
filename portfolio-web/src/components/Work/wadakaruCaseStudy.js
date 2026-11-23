@@ -1,23 +1,9 @@
+import heroShowcaseImg from "../../assets/wadakaru thumbail.webp";
 import homeCleanScreen from "../../assets/wadakaru1.webp";
 import onboardingCleanScreen from "../../assets/wadakaru3.png";
 import profileCleanScreen from "../../assets/wadakaru2.png";
 import homeAnnotatedScreen from "../../assets/home.webp";
 import onboardingAnnotatedScreen from "../../assets/landing.webp";
-
-export const WADAKARU_PREVIEW_SCREENS = [
-  {
-    src: onboardingCleanScreen,
-    alt: "WADAKARU welcome and onboarding screen with Get Started button",
-  },
-  {
-    src: homeCleanScreen,
-    alt: "WADAKARU home screen with Poddala Galle location, categories, and nearby technicians",
-  },
-  {
-    src: profileCleanScreen,
-    alt: "WADAKARU plumber profile screen for Sampath Perara with reviews and Hire action",
-  },
-];
 
 export const WADAKARU_CASE_STUDY = {
   intro: {
@@ -26,29 +12,10 @@ export const WADAKARU_CASE_STUDY = {
     title: "WADAKARU",
     subtitle: "Home Services Booking App",
     lead: "Connecting homeowners with local service professionals through a simple and intuitive mobile experience.",
-    heroScreens: [
-      {
-        id: "onboarding",
-        label: "Welcome & Onboarding",
-        src: onboardingCleanScreen,
-        alt: "WADAKARU welcome and onboarding mobile screen featuring a service technician and Get Started call to action",
-        featured: false,
-      },
-      {
-        id: "home",
-        label: "Home & Discovery",
-        src: homeCleanScreen,
-        alt: "WADAKARU location-based home screen showing Poddala, Galle, service categories, and nearby professionals",
-        featured: true,
-      },
-      {
-        id: "profile",
-        label: "Provider Profile",
-        src: profileCleanScreen,
-        alt: "WADAKARU service provider detail screen for Sampath Perara with bio, review, hourly rate, and Hire button",
-        featured: false,
-      },
-    ],
+    heroImage: {
+      src: heroShowcaseImg,
+      alt: "WADAKARU mobile app interface showcase featuring Home & Service Discovery, Provider Profile, and Onboarding iPhone screens",
+    },
   },
   overview: {
     index: "02 — Project Overview",

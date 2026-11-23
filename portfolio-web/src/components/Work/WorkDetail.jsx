@@ -93,28 +93,12 @@ export default function WorkDetail({ project, onNavigate }) {
           <p className="wd-lead">{intro.lead}</p>
         </div>
 
-        <div className="wd-hero-stage">
-          <div className="wd-hero-phones">
-            {intro.heroScreens.map((screen) => (
-              <figure
-                key={screen.id}
-                className={`wd-hero-phone${
-                  screen.featured ? " wd-hero-phone--featured" : ""
-                }`}
-              >
-                <div className="wd-device-frame">
-                  <img
-                    src={screen.src}
-                    alt={screen.alt}
-                    className="wd-device-screen"
-                  />
-                </div>
-                <figcaption className="wd-hero-caption">
-                  {screen.label}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
+        <div className="wd-hero-media">
+          <img
+            src={intro.heroImage.src}
+            alt={intro.heroImage.alt}
+            className="wd-hero-image"
+          />
         </div>
       </header>
 

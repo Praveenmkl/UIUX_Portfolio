@@ -16,25 +16,7 @@ export default function WorkCard({ project, onOpenProject }) {
   return (
     <article className="work-card">
       <div className="work-card-media">
-        {project.previewScreens?.length ? (
-          <div className="work-card-showcase" aria-label={project.thumbnailAlt || project.title}>
-            {project.previewScreens.map((screen, index) => (
-              <div
-                key={screen.src}
-                className={`work-card-phone${
-                  index === 1 ? " work-card-phone--featured" : ""
-                }`}
-              >
-                <img
-                  src={screen.src}
-                  alt={screen.alt}
-                  className="work-card-phone-image"
-                  loading="lazy"
-                />
-              </div>
-            ))}
-          </div>
-        ) : project.thumbnail ? (
+        {project.thumbnail ? (
           <img
             src={project.thumbnail}
             alt={project.thumbnailAlt || project.title}
@@ -46,7 +28,7 @@ export default function WorkCard({ project, onOpenProject }) {
             <span className="work-card-fallback-badge">{project.category}</span>
             <strong className="work-card-fallback-title">WADAKARU.LK</strong>
             <p className="work-card-fallback-note">
-              Add <code>wadakaru thambnail.webp</code> to{" "}
+              Add <code>wadakaru thumbail.webp</code> to{" "}
               <code>src/assets/</code> to display the full mockup preview.
             </p>
           </div>
