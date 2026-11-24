@@ -31,17 +31,17 @@ const CONTACT_CONTENT = {
     {
       id: "linkedin",
       label: "LinkedIn",
-      href: "https://www.linkedin.com",
+      href: "https://www.linkedin.com/in/praveen-kalansooriya-219198303/",
     },
     {
       id: "medium",
       label: "Medium",
-      href: "https://medium.com",
+      href: "https://medium.com/@kalansooriya615",
     },
     {
       id: "github",
       label: "GitHub",
-      href: "https://github.com",
+      href: "https://github.com/Praveenmkl",
     },
   ],
   form: {
