@@ -1,27 +1,27 @@
-import heroShowcaseImg from "../../assets/wadakaru thumbail.webp";
-import homeCleanScreen from "../../assets/wadakaru1.webp";
-import onboardingCleanScreen from "../../assets/wadakaru3.png";
-import profileCleanScreen from "../../assets/wadakaru2.png";
-import homeAnnotatedScreen from "../../assets/home.webp";
-import onboardingAnnotatedScreen from "../../assets/landing.webp";
+import heroShowcaseImg from "../../../assets/wadakaru thumbail.webp";
+import homeCleanScreen from "../../../assets/wadakaru1.webp";
+import onboardingCleanScreen from "../../../assets/wadakaru3.png";
+import profileCleanScreen from "../../../assets/wadakaru2.png";
+import homeAnnotatedScreen from "../../../assets/home.webp";
+import onboardingAnnotatedScreen from "../../../assets/landing.webp";
 
 export const WADAKARU_CASE_STUDY = {
   intro: {
     index: "01 — Project Introduction",
     tags: ["Mobile UI Design", "Concept Project"],
-    title: "WADAKARU",
+    title: "වැඩකරු.lk",
     subtitle: "Home Services Booking App",
     lead: "Connecting homeowners with local service professionals through a simple and intuitive mobile experience.",
     heroImage: {
       src: heroShowcaseImg,
-      alt: "WADAKARU mobile app interface showcase featuring Home & Service Discovery, Provider Profile, and Onboarding iPhone screens",
+      alt: "වැඩකරු.lk mobile app interface showcase featuring Home & Service Discovery, Provider Profile, and Onboarding iPhone screens",
     },
   },
   overview: {
     index: "02 — Project Overview",
     heading: "About the Project",
     paragraphs: [
-      "WADAKARU is a mobile app UI concept designed to simplify how homeowners discover local service professionals, including plumbers, electricians, and handymen.",
+      "වැඩකරු.lk is a mobile app UI concept designed to simplify how homeowners discover local service professionals, including plumbers, electricians, and handymen.",
       "The design focuses on straightforward navigation, clear service information, and a welcoming visual experience.",
     ],
     specs: [
@@ -46,7 +46,7 @@ export const WADAKARU_CASE_STUDY = {
           "Four-step onboarding progress indicator above a full-width primary pill CTA",
         ],
         src: onboardingCleanScreen,
-        alt: "WADAKARU welcome and onboarding screen with WADAKARU.LK header, Trusted Home Services copy, and Get Started button",
+        alt: "වැඩකරු.lk welcome and onboarding screen with වැඩකරු.lk header, Trusted Home Services copy, and Get Started button",
       },
       {
         id: "screen-02",
@@ -59,7 +59,7 @@ export const WADAKARU_CASE_STUDY = {
           "Five circular service categories (House, Electricity, Handcraft, Plumber, More) and scannable nearby cards",
         ],
         src: homeCleanScreen,
-        alt: "WADAKARU home screen with location search, service category icons, nearby technician cards, and five-tab bottom navigation",
+        alt: "වැඩකරු.lk home screen with location search, service category icons, nearby technician cards, and five-tab bottom navigation",
       },
       {
         id: "screen-03",
@@ -72,7 +72,7 @@ export const WADAKARU_CASE_STUDY = {
           "Clear hourly pricing bar (Rs. 2500 / 1hr) anchored beside a prominent Hire button",
         ],
         src: profileCleanScreen,
-        alt: "WADAKARU service provider detail page for Sampath Perara showing experience, reviews, pricing, and Hire Sampath CTA",
+        alt: "වැඩකරු.lk service provider detail page for Sampath Perara showing experience, reviews, pricing, and Hire Sampath CTA",
       },
     ],
     designDetail: {
@@ -90,13 +90,13 @@ export const WADAKARU_CASE_STUDY = {
           id: "home-specs",
           caption: "Home Screen — Spacing & Component Grid",
           src: homeAnnotatedScreen,
-          alt: "Annotated WADAKARU home screen detailing 56px top margin, 48px icons, 343px search bar, 200px cards, and 24px navigation icons",
+          alt: "Annotated වැඩකරු.lk home screen detailing 56px top margin, 48px icons, 343px search bar, 200px cards, and 24px navigation icons",
         },
         {
           id: "onboarding-specs",
           caption: "Onboarding Screen — Alignment & CTA Sizing",
           src: onboardingAnnotatedScreen,
-          alt: "Annotated WADAKARU onboarding screen showing 58px top spacing, 128px brand offset, 72px headline margins, and 314px by 48px button",
+          alt: "Annotated වැඩකරු.lk onboarding screen showing 58px top spacing, 128px brand offset, 72px headline margins, and 314px by 48px button",
         },
       ],
     },
@@ -156,6 +156,6 @@ export const WADAKARU_CASE_STUDY = {
   closing: {
     index: "05 — Project Closing",
     heading: "Project Reflection",
-    copy: "WADAKARU allowed me to explore mobile interface design through a practical home services concept, focusing on visual hierarchy, component consistency, spacing, and accessible presentation of service information.",
+    copy: "වැඩකරු.lk allowed me to explore mobile interface design through a practical home services concept, focusing on visual hierarchy, component consistency, spacing, and accessible presentation of service information.",
   },
 };

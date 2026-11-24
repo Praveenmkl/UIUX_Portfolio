@@ -1,4 +1,6 @@
+import { Fragment } from "react";
 import { APP_ROUTES, shouldInterceptLinkClick } from "../../utils/router.js";
+import "../../styles/fm-sinhala.css";
 
 /**
  * Interactive portfolio showcase card linking to the full-page project showcase route.
@@ -44,7 +46,14 @@ export default function WorkCard({ project, onOpenProject }) {
             className="work-card-trigger"
             onClick={handleClick}
           >
-            {project.title}
+            {project.title.split(".lk").map((part, index, parts) => (
+              <Fragment key={index}>
+                {part}
+                {index < parts.length - 1 && (
+                  <span className="fm-domain">.lk</span>
+                )}
+              </Fragment>
+            ))}
           </a>
         </h2>
         <p className="work-card-subtitle">{project.subtitle}</p>

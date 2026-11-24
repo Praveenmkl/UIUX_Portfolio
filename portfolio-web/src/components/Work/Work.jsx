@@ -11,14 +11,14 @@ const DEFAULT_WORK_FILTER = "UI Designs";
 export const WORK_PROJECTS = [
   {
     id: "wadakaru-home-services",
-    title: "WADAKARU – Home Services Booking App",
+    title: "වැඩකරු.lk – Home Services Booking App",
     subtitle: "Connecting homeowners with trusted local service professionals",
     category: "UI Designs",
     categories: ["UI Designs"],
     thumbnail: wadakaruThumbnail,
     thumbnailAlt:
-      "WADAKARU mobile app interface showcase with location-based service discovery, technician profile, and onboarding screens",
-    fallbackTitle: "WADAKARU.LK",
+      "වැඩකරු.lk mobile app interface showcase with location-based service discovery, technician profile, and onboarding screens",
+    fallbackTitle: "වැඩකරු.lk",
     fallbackAssetHint: "wadakaru thumbail.webp",
   },
   {

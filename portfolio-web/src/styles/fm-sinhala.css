@@ -1,0 +1,10 @@
+.fm-sinhala {
+  font-family: "FMGanganee", "Noto Sans Sinhala", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: 0;
+}
+
+.fm-domain {
+  font-weight: 300;
+}

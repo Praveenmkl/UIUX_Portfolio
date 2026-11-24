@@ -1,7 +1,7 @@
-import heroThumbnailImg from "../../assets/powerfit/PowerFit Onboarding App Mockup.webp";
+import heroThumbnailImg from "../../../assets/powerfit/PowerFit Onboarding App Mockup.webp";
 
 const POWERFIT_ASSET_MODULES = import.meta.glob(
-  "../../assets/powerfit/*.{png,jpg,jpeg,webp}",
+  "../../../assets/powerfit/**/*.{png,PNG,jpg,JPG,jpeg,JPEG,webp,WEBP}",
   {
     eager: true,
     import: "default",
@@ -59,63 +59,45 @@ function resolvePowerFitAssets() {
   const height = findKnown("height.png");
   const weight = findKnown("weight.png");
 
-  // Onboarding photo screens use .jpg/.jpeg (distinct from the clean UI .png screens and mockup thumbnail).
-  const photoEntries = entries.filter(([assetPath]) => {
+  const remainingEntries = entries.filter(([assetPath]) => {
     const fileName = getFileName(assetPath);
-    return !isThumbnailFile(fileName) && /\.(jpe?g|webp)$/i.test(fileName);
+    return !KNOWN_PNG_NAMES.has(fileName) && !isThumbnailFile(fileName);
   });
 
-  const usedPhotoPaths = new Set();
-  const claimPhoto = (keywords) => {
-    const matched = findEntryByKeywords(
-      photoEntries.filter(([p]) => !usedPhotoPaths.has(p)),
-      keywords
-    );
+  const usedPaths = new Set();
+  const claimMatch = (pool, keywords, allowFallback = true) => {
+    const available = pool.filter(([p]) => !usedPaths.has(p));
+    const matched = findEntryByKeywords(available, keywords);
     if (matched) {
-      usedPhotoPaths.add(matched[0]);
+      usedPaths.add(matched[0]);
       return matched[1];
     }
-    const nextUnclaimed = photoEntries.find(([p]) => !usedPhotoPaths.has(p));
-    if (nextUnclaimed) {
-      usedPhotoPaths.add(nextUnclaimed[0]);
-      return nextUnclaimed[1];
+    if (allowFallback && available[0]) {
+      usedPaths.add(available[0][0]);
+      return available[0][1];
     }
     return null;
   };
 
-  const onboardingWelcome = claimPhoto(["welcome", "1"]);
-  const onboardingWorkout = claimPhoto(["workout", "favorite", "2"]);
-  const onboardingGoals = claimPhoto(["goal", "training", "3"]);
-
-  // Remaining two UI PNG screens correspond to Step 4 (frequency) and plan building (45%).
-  const remainingPngEntries = entries.filter(([assetPath]) => {
+  // Prioritize .jpg/.jpeg/.webp or onboarding-named files for the 3 photo onboarding screens.
+  const photoPool = remainingEntries.filter(([assetPath]) => {
     const fileName = getFileName(assetPath);
     return (
-      fileName.endsWith(".png") &&
-      !KNOWN_PNG_NAMES.has(fileName) &&
-      !isThumbnailFile(fileName)
+      /\.(jpe?g|webp)$/i.test(fileName) ||
+      /welcome|workout|favorite|goal|onboard|intro|slide/i.test(fileName)
     );
   });
 
-  const usedPngPaths = new Set();
-  const claimRemainingPng = (keywords) => {
-    const matched = findEntryByKeywords(
-      remainingPngEntries.filter(([p]) => !usedPngPaths.has(p)),
-      keywords
-    );
-    if (matched) {
-      usedPngPaths.add(matched[0]);
-      return matched[1];
-    }
-    const nextUnclaimed = remainingPngEntries.find(([p]) => !usedPngPaths.has(p));
-    if (nextUnclaimed) {
-      usedPngPaths.add(nextUnclaimed[0]);
-      return nextUnclaimed[1];
-    }
-    return null;
-  };
+  const onboardingWelcome = claimMatch(photoPool, ["welcome", "1"]);
+  const onboardingWorkout = claimMatch(photoPool, ["workout", "favorite", "2"]);
+  const onboardingGoals = claimMatch(photoPool, ["goal", "training", "3"]);
 
-  const frequency = claimRemainingPng([
+  // Remaining PNG screens map to Step 4 (frequency) and plan building (45%).
+  const remainingPngPool = remainingEntries.filter(([assetPath]) =>
+    getFileName(assetPath).endsWith(".png")
+  );
+
+  const frequency = claimMatch(remainingPngPool, [
     "train",
     "freq",
     "often",
@@ -124,7 +106,7 @@ function resolvePowerFitAssets() {
     "routine",
     "habit",
   ]);
-  const planBuilding = claimRemainingPng([
+  const planBuilding = claimMatch(remainingPngPool, [
     "plan",
     "load",
     "build",
