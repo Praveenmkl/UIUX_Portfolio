@@ -26,9 +26,11 @@ export default function WorkCard({ project, onOpenProject }) {
         ) : (
           <div className="work-card-fallback">
             <span className="work-card-fallback-badge">{project.category}</span>
-            <strong className="work-card-fallback-title">WADAKARU.LK</strong>
+            <strong className="work-card-fallback-title">
+              {project.fallbackTitle || project.title}
+            </strong>
             <p className="work-card-fallback-note">
-              Add <code>wadakaru thumbail.webp</code> to{" "}
+              Add <code>{project.fallbackAssetHint || "project-thumbnail.webp"}</code> to{" "}
               <code>src/assets/</code> to display the full mockup preview.
             </p>
           </div>

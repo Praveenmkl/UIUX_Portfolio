@@ -35,7 +35,7 @@
   display: grid;
   grid-template-columns: minmax(0, 920px);
   justify-content: center;
-  gap: 36px;
+  gap: clamp(40px, 5.5vw, 68px);
 }
 
 .work-card {

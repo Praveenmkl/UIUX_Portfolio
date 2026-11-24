@@ -1,9 +1,10 @@
 import { APP_ROUTES, shouldInterceptLinkClick } from "../../utils/router.js";
+import PowerFitDetail from "./PowerFitDetail.jsx";
 import { WADAKARU_CASE_STUDY } from "./wadakaruCaseStudy.js";
 import "./WorkDetail.css";
 
 /**
- * Full-page project showcase presenting introduction, overview, UI screens, layout specs, visual language, and reflection.
+ * Full-page project showcase routing to the matching project case study or coming-soon placeholder.
  */
 export default function WorkDetail({ project, onNavigate }) {
   function handleRouteClick(event, targetHref) {
@@ -11,6 +12,10 @@ export default function WorkDetail({ project, onNavigate }) {
       event.preventDefault();
       onNavigate(targetHref);
     }
+  }
+
+  if (project?.id === "powerfit-fitness-app") {
+    return <PowerFitDetail onRouteClick={handleRouteClick} />;
   }
 
   const isWadakaru = project?.id === "wadakaru-home-services";

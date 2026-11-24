@@ -1,5 +1,6 @@
 import { useState } from "react";
 import wadakaruThumbnail from "../../assets/wadakaru thumbail.webp";
+import powerfitThumbnail from "../../assets/powerfit/PowerFit Onboarding App Mockup.webp";
 import WorkCard from "./WorkCard.jsx";
 import WorkFilters from "./WorkFilters.jsx";
 import "./Work.css";
@@ -17,6 +18,21 @@ export const WORK_PROJECTS = [
     thumbnail: wadakaruThumbnail,
     thumbnailAlt:
       "WADAKARU mobile app interface showcase with location-based service discovery, technician profile, and onboarding screens",
+    fallbackTitle: "WADAKARU.LK",
+    fallbackAssetHint: "wadakaru thumbail.webp",
+  },
+  {
+    id: "powerfit-fitness-app",
+    title: "PowerFit – Fitness & Workout Mobile App",
+    subtitle:
+      "A modern fitness experience designed to simplify personal training and workout planning.",
+    category: "UI Designs",
+    categories: ["UI Designs"],
+    thumbnail: powerfitThumbnail,
+    thumbnailAlt:
+      "PowerFit mobile app interface showcase featuring splash and onboarding screens",
+    fallbackTitle: "POWERFIT",
+    fallbackAssetHint: "powerfit thumbnail.webp",
   },
 ];
 
