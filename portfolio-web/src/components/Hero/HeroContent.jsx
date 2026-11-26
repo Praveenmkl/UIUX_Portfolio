@@ -20,12 +20,19 @@ export default function HeroContent({
     }
   }
 
+  const nameMatch = name.match(/^(I[’']m\s+)(.+)$/);
+  const nameIntro = nameMatch ? nameMatch[1] : "";
+  const nameMain = nameMatch ? nameMatch[2] : name;
+
   return (
     <div className="hero-copy">
       <h1 className="hero-title" id="hero-heading">
         <span className="hero-greeting">{greeting}</span>
         <br />
-        <span className="hero-name">{name}</span>
+        <span className="hero-name">
+          {nameIntro}
+          <span className="hero-name-full">{nameMain}</span>
+        </span>
       </h1>
       <p className="hero-role">
         <span>{role}</span>

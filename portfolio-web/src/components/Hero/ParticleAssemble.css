@@ -1,6 +1,6 @@
 .particle-stage {
   position: relative;
-  width: clamp(270px, 28vw, 420px);
+  width: clamp(280px, min(32vw, 60vh), 500px);
   aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
@@ -56,13 +56,13 @@
 
 @media (max-width: 860px) {
   .particle-stage {
-    width: clamp(200px, 52vw, 270px);
+    width: clamp(220px, 56vw, 300px);
   }
 }
 
 @media (max-width: 480px) {
   .particle-stage {
-    width: clamp(176px, 48vw, 215px);
+    width: clamp(190px, 54vw, 245px);
   }
 }
 
